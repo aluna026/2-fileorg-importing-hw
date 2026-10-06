@@ -68,7 +68,7 @@ print(ds1)
 # ANSWER
 if (!dir.exists("data_A_cleaned")) dir.create("data_A_cleaned")
 write_csv(ds1, file = "data_A_cleaned/ds_6191_1.csv")
-   # I named the file this because the original dataset is called ds1 so the new one is called ds2
+   # I named the file ds_6191_1.csv because it only has the data from this one txt file
 
 ### QUESTION 4 ----- 
 
