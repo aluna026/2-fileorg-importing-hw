@@ -1,8 +1,10 @@
-# Aylin
+#Aylin Luna:
 #PSYC 259 Homework 1 - Data Import
 #For full credit, provide answers for at least 6/8 questions
 
 #List names of students collaborating with (no more than 2): 
+  # Madeline Hoorn
+  # Megan Richardson
 
 #GENERAL INFO 
 #data_A contains 12 files of data. 
@@ -17,26 +19,35 @@
 ### QUESTION 1 ------ 
 
 # Load the readr package
-
 # ANSWER
-
+  # also added other packages used throughout for ease
+library(readr)
+library(here)
+library(fs)
+library(readxl)
 
 ### QUESTION 2 ----- 
 
-# Read in the data for 6191_1.txt using here()
-# Hint 1: use getwd first to check working directory
-# Hint 2: make sure you let R know about the data_A subfolder
-# Hint 3: nest the readr and here() functions 
-# Store it to an object called ds1
-# Ignore the header information, and just import the 20 trials
-# Be sure to look at the format of the file to determine what read_* function to use
+# Read in the data for 6191_1.txt using here() - DONE
+# Hint 1: use getwd first to check working directory - DONE
+# Hint 2: make sure you let R know about the data_A subfolder - DONE
+# Hint 3: nest the readr and here() functions - DONE
+# Store it to an object called ds1 - DONE
+# Ignore the header information, and just import the 20 trials - DONE
+# Be sure to look at the format of the file to determine what read_* function to use - DONE
 # And what arguments might be needed
 
 # A list of column names are provided to use:
-
 col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 
 # ANSWER
+getwd() #"/Users/aylinluna/Documents/PSYC259 Data Science/2-fileorg-importing-hw"
+here() #"/Users/aylinluna/Documents/PSYC259 Data Science/2-fileorg-importing-hw"
+here("data_A", "6191_1.txt")
+file.exists(here("259-langbasics-importing-hw.Rproj"))
+
+ds1 <- read_tsv(here("data_A", "6191_1.txt"), col_names = col_names, skip = 7)
+print(ds1)
 
 ### QUESTION 3a. ----- 
 
@@ -44,16 +55,20 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # Create a new column in ds1 that takes trial_num and adds 100
 
 # ANSWER
-
+ds1$correct_trial_num <- ds1$trial_num+100
+    #"ds1$correct_trial_num" creates the new column and "ds1$trial_num+100" takes the values and adds 100
+print(ds1)
 
 ### QUESTION 3b. ----- 
-# Write the new data from question 3a to a CSV file in the "data_A_cleaned" folder
-# Make sure to include code to create a "data_A_cleaned" folder if it doesn't already exist
+# Write the new data from question 3a to a CSV file in the "data_A_cleaned" folder - DONE
+# Make sure to include code to create a "data_A_cleaned" folder if it doesn't already exist - DONE
 # Choose a naming convention for this new dataset (ex. snake_case, no spaces, a date or version prefix/suffix)
-# Add one commend explaining your naming choice
+# Add one comment explaining your naming choice
 
 # ANSWER
-
+if (!dir.exists("data_A_cleaned")) dir.create("data_A_cleaned")
+write_csv(ds1, file = "data_A_cleaned/ds_6191_1.csv")
+   # I named the file this because the original dataset is called ds1 so the new one is called ds2
 
 ### QUESTION 4 ----- 
 
@@ -61,19 +76,21 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # Store it to a variable
 
 # ANSWER
-
+data_A_file_names <- list.files('data_A', full.names = TRUE)
+print(data_A_file_names)
 
 ### QUESTION 5 ----- 
 
 # Read all of the files in data_A into a single tibble called ds
 
 # ANSWER
-
+ds <- read_tsv(data_A_file_names, col_names = col_names, skip = 7)
+print(ds)
 
 ### QUESTION 6 -----
 
-# Try creating the "add 100" to the trial number variable again
-# There's an error! Take a look at 6191_5.txt to see why.
+# Try creating the "add 100" to the trial number variable again - DONE, error did appear
+# There's an error! Take a look at 6191_5.txt to see why. - ten instead of "10"
 # Use the col_types argument to force trial number to be an integer "i"
 # You might need to check ?read_tsv to see what options to use for the columns
 # trial_num should be integer, speed_actual and speed_response should be character, and correct should be logical
@@ -81,7 +98,10 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # (It should work now, but you'll see a warning because of the erroneous data point)
 
 # ANSWER
-
+ds$correct_trial_num <- ds$trial_num+100 # error due to "ten" instead of "10" in 6191_5.txt
+ds <- read_tsv(data_A_file_names, col_names = col_names, skip = 7, col_types = "iccl")
+ds$correct_trial_num <- ds$trial_num+100 # re-running this code to create new column
+print(ds)
 
 ### QUESTION 7 -----
 
@@ -91,7 +111,8 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # Re-import the data so that filename becomes a column
 
 # ANSWER
-
+ds <- read_tsv(data_A_file_names, col_names = col_names, skip = 7, col_types = "iccl", id = "filename")
+print(ds)
 
 ### QUESTION 8 -----
 
@@ -100,4 +121,19 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # There are two sheets of data -- import each one into a new tibble
 
 # ANSWER
+#install.packages("readxl")
+library(readxl)
+here("data_B", "participant_info.xlsx")
+file.exists(here("259-langbasics-importing-hw.Rproj"))
+participant_info <- read_excel(here("data_B", "participant_info.xlsx"))
+print(participant_info)
 
+sheet1_participantinfo <- read_excel(here("data_B", "participant_info.xlsx"), sheet = 1)
+print(sheet1_participantinfo)
+
+sheet2_participantinfo <- read_excel(here("data_B", "participant_info.xlsx"), sheet = 2)
+print(sheet2_participantinfo) #lines 134 and 135 resulted in a weird output
+                              #realized its because sheet 2 does not actually have column names
+
+sheet2_participantinfo <- read_excel(here("data_B", "participant_info.xlsx"), sheet = 2, col_names = FALSE)
+print(sheet2_participantinfo) #col_names = FALSE resulted in sheet 2 getting column names of 1 and 2
